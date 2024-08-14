@@ -1,0 +1,3 @@
+arb-dir: lib/l10n #translations
+template-arb-file: app_en.arb  #to translate to english
+output-localization-file: app_localizations.dart  #the automatic generated code
