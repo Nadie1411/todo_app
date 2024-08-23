@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/Home/language_bottom_sheet.dart';
 import 'package:todo_app/Home/theme_bottom_sheet.dart';
+import 'package:todo_app/Provider/app_config_provider.dart';
 import 'package:todo_app/app_colors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsTab extends StatefulWidget {
   const SettingsTab({super.key});
@@ -16,14 +18,14 @@ class _SettingsTabState extends State<SettingsTab> {
   Widget build(BuildContext context) {
     var height= MediaQuery.of(context).size.height;
     var width= MediaQuery.of(context).size.width;
+    var provider = Provider.of<AppConfigProvider>(context);
+
     return Container(
-
-
       margin: EdgeInsets.all(15),
-        child: Column(
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(context)!.language,
+          Text(AppLocalizations.of(context)!.language,
             style: TextStyle(fontWeight: FontWeight.bold,
               fontSize: 22,)),
             SizedBox(height: height*0.02),
@@ -47,10 +49,16 @@ class _SettingsTabState extends State<SettingsTab> {
                 child: Row(
                   mainAxisAlignment:MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(AppLocalizations.of(context)!.english,
-                    style: TextStyle(fontWeight: FontWeight.w400,
-                    fontSize: 22)),
-                    Icon(Icons.arrow_drop_down)
+                  Text(
+                    provider.appLanguage == 'en'
+                        ? AppLocalizations.of(context)!.english
+                        : AppLocalizations.of(context)!.arabic,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: AppColors.blackDarkColor),
+                  ),
+                  Icon(Icons.arrow_drop_down)
 
 
                   ],
@@ -85,10 +93,15 @@ class _SettingsTabState extends State<SettingsTab> {
                 child: Row(
                   mainAxisAlignment:MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(AppLocalizations.of(context)!.light,
-                        style: TextStyle(fontWeight: FontWeight.w400,
-                            fontSize: 22)),
-                    Icon(Icons.arrow_drop_down)
+                  Text(
+                      provider.appMode == ThemeMode.light
+                          ? AppLocalizations.of(context)!.light
+                          : AppLocalizations.of(context)!.dark,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: AppColors.blackDarkColor)),
+                  Icon(Icons.arrow_drop_down)
 
 
                   ],

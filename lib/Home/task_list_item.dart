@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/Provider/list_provider.dart';
+import 'package:todo_app/firebase_utils.dart';
+import 'package:todo_app/model/task.dart';
 
 import '../app_colors.dart';
 
 class TaskListItem extends StatelessWidget
 {
+  Task task;
+
+  TaskListItem({required this.task});
+
   @override
   Widget build(BuildContext context)
   {
+    var listProvider = Provider.of<ListProvider>(context);
     return  Container(
       margin: EdgeInsets.all(12),
       child: Slidable(
@@ -27,7 +36,11 @@ class TaskListItem extends StatelessWidget
               borderRadius:BorderRadius.circular(15) ,
               onPressed: (context)
               {
-
+                FirebaseUtils.deleteTaskFromFirestore(task)
+                    .timeout(Duration(seconds: 1), onTimeout: () {
+                  print('Task Deleted Sucessfully');
+                  listProvider.getAllTasksFromFireStore();
+                });
               },
               backgroundColor: Color(0xFFFE4A49),
               foregroundColor: Colors.white,
@@ -60,8 +73,20 @@ class TaskListItem extends StatelessWidget
               Expanded(child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text('Title',style: TextStyle(fontWeight: FontWeight.bold,fontSize:22,color: AppColors.primaryColor),),
-                  Text('desc.',style: TextStyle(fontWeight: FontWeight.bold,fontSize:22,color: AppColors.blackColor))
+                  Text(
+                    task.title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: AppColors.primaryColor),
+                  ),
+                  Text(
+                    task.description,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: AppColors.primaryColor),
+                  ),
                 ],
               )),
               Container(

@@ -21,41 +21,38 @@ class _HomeScreenState extends State<HomeScreen> {
   {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.15 ,
-    title: Text(selectedIndex==0 ? AppLocalizations.of(context)!.app_title :AppLocalizations.of(context)!.settings,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.20,
+          title: Text(selectedIndex==0 ? AppLocalizations.of(context)!.app_title :AppLocalizations.of(context)!.settings,
         style: Theme.of(context).textTheme.bodyLarge)),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         notchMargin: 8,
-        child: BottomNavigationBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          currentIndex: selectedIndex,
-          onTap: (index){
-            selectedIndex=index;
-            setState(() {
-
-            });
-          },
-
-          items: [
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage('assets/tasks_icn.png')),
-              label: ''
-            ),
-            BottomNavigationBarItem(
-                icon: ImageIcon(AssetImage('assets/Icon feather-settings.png')),
-                label: ''
-
-            )
-          ],
+        child: SingleChildScrollView(
+          child: BottomNavigationBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            currentIndex: selectedIndex,
+            onTap: (index) {
+              selectedIndex = index;
+              setState(() {});
+            },
+            items: [
+              BottomNavigationBarItem(
+                  icon: ImageIcon(AssetImage('assets/tasks_icn.png')),
+                  label: ''),
+              BottomNavigationBarItem(
+                  icon:
+                      ImageIcon(AssetImage('assets/Icon feather-settings.png')),
+                  label: '')
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           showAddTaskBottomSheet();
         },
-        child: Icon(Icons.add,size: 35),
+        child: Icon(Icons.add, size: 20),
         shape: StadiumBorder(side: BorderSide(
           width: 6,
           color: AppColors.whiteColor
