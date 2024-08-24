@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/Provider/app_config_provider.dart';
 import 'package:todo_app/Provider/list_provider.dart';
+import 'package:todo_app/Provider/user_provider.dart';
 import 'package:todo_app/app_colors.dart';
+import 'package:todo_app/dialouge_utiils.dart';
 import 'package:todo_app/firebase_utils.dart';
 import 'package:todo_app/model/task.dart';
 
@@ -20,6 +23,7 @@ var selectDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<AppConfigProvider>(context);
     listProvider = Provider.of<ListProvider>(context);
     return  Container(
       margin: EdgeInsets.all(12),
@@ -36,22 +40,19 @@ var selectDate = DateTime.now();
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        onChanged: (text) {
-                          title = text;
-                        },
-                        validator: (text) {
-                          if (text == null || text.isEmpty) {
-                            return 'Enter Task Title';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                            labelText:
-                                AppLocalizations.of(context)!.add_new_task),
-                      ),
+                    TextFormField(
+                      onChanged: (text) {
+                        title = text;
+                      },
+                      validator: (text) {
+                        if (text == null || text.isEmpty) {
+                          return 'Enter Task Title';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          labelText:
+                          AppLocalizations.of(context)!.add_new_task),
                     ),
                     TextFormField(
                       onChanged: (text) {
@@ -68,14 +69,14 @@ var selectDate = DateTime.now();
                       decoration: InputDecoration(
                    labelText: 'Enter task description'
                ),
-               maxLines: 4,),
+                      maxLines: 2,),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(AppLocalizations.of(context)!.select_date,
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.blackColor)),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: AppColors.blackColor)),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -100,15 +101,13 @@ var selectDate = DateTime.now();
                         onPressed: () {
                           addTask();
                           BottomNavigationBarThemeData(
-                              backgroundColor: Colors.cyan);
+                              backgroundColor: AppColors.primaryColor);
                         },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryColor),
                         child: Text(
                           AppLocalizations.of(context)!.add,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primaryColor),
-                        ))
+                            style: Theme.of(context).textTheme.bodyMedium))
                   ],
                 ))
           ],
@@ -121,22 +120,51 @@ var selectDate = DateTime.now();
 
   void addTask()
   {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
     if (formKey.currentState?.validate() == true) {
       Task tasks =
           Task(title: title, description: description, datetime: selectDate);
 
-      FirebaseUtils.addTaskToFireStore(tasks).timeout(Duration(seconds: 1),
-            onTimeout: () {
-              print('task added successfully');
-              listProvider.getAllTasksFromFireStore();
+      FirebaseUtils.addTaskToFireStore(tasks, userProvider.currentUser!.id)
+          .then((value) {
+        DialogeUtils.showMessage(
+            context: context,
+            content: "Task Added Successfully",
+            posActionName: "Ok");
+        listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
 
-              Navigator.pop(context);
+        Navigator.pop(context);
+      }).timeout(Duration(seconds: 1), onTimeout: () {
+        DialogeUtils.showMessage(
+            context: context,
+            content: "Task Added Successfully",
+            posActionName: "Ok");
+        listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
+
+        Navigator.pop(context);
             });
       }
   }
 
   void showCalendar() async {
     var chosenDate = await showDatePicker(
+        builder: (context, child) {
+          return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: ColorScheme.light(
+                  primary: AppColors.primaryColor,
+                  onPrimary: AppColors.blackColor, // header text color
+                  onSurface: AppColors.primaryColor, // body text color
+                ),
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor:
+                        AppColors.primaryColor, // button text color
+                  ),
+                ),
+              ),
+              child: child!);
+        },
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),

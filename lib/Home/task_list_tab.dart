@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/Home/task_list_item.dart';
 import 'package:todo_app/Provider/list_provider.dart';
+import 'package:todo_app/Provider/user_provider.dart';
 
 class TaskListTab extends StatefulWidget {
   @override
@@ -13,9 +14,10 @@ class _TaskListTabState extends State<TaskListTab> {
   @override
   Widget build(BuildContext context) {
     var listProvider = Provider.of<ListProvider>(context);
+    var userProvider = Provider.of<UserProvider>(context);
 
     if (listProvider.tasksList.isEmpty) {
-      listProvider.getAllTasksFromFireStore();
+      listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
     }
 
     return Column (
@@ -25,7 +27,8 @@ class _TaskListTabState extends State<TaskListTab> {
         initialDate: DateTime.now(),
           onDateChange: (selectedDate) {
             //`selectedDate` the new date selected.
-            listProvider.changeSelectDate(selectedDate);
+            listProvider.changeSelectDate(
+                selectedDate, userProvider.currentUser!.id);
           },
           activeColor: Color(0xff5D9CEC) ,
 

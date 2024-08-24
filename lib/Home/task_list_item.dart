@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/Provider/list_provider.dart';
+import 'package:todo_app/Provider/user_provider.dart';
+import 'package:todo_app/dialouge_utiils.dart';
 import 'package:todo_app/firebase_utils.dart';
 import 'package:todo_app/model/task.dart';
 
@@ -17,6 +19,7 @@ class TaskListItem extends StatelessWidget
   Widget build(BuildContext context)
   {
     var listProvider = Provider.of<ListProvider>(context);
+    var userProvider = Provider.of<UserProvider>(context);
     return  Container(
       margin: EdgeInsets.all(12),
       child: Slidable(
@@ -36,10 +39,24 @@ class TaskListItem extends StatelessWidget
               borderRadius:BorderRadius.circular(15) ,
               onPressed: (context)
               {
-                FirebaseUtils.deleteTaskFromFirestore(task)
-                    .timeout(Duration(seconds: 1), onTimeout: () {
-                  print('Task Deleted Sucessfully');
-                  listProvider.getAllTasksFromFireStore();
+                FirebaseUtils.deleteTaskFromFirestore(
+                        task, userProvider.currentUser!.id)
+                    .then(
+                  (value) {
+                    DialogeUtils.showMessage(
+                        context: context,
+                        content: "Task Deleted Successfully",
+                        posActionName: "Ok");
+                    listProvider
+                        .getAllTasksFromFireStore(userProvider.currentUser!.id);
+                  },
+                ).timeout(Duration(seconds: 1), onTimeout: () {
+                  DialogeUtils.showMessage(
+                      context: context,
+                      content: "Task Deleted Successfully",
+                      posActionName: "Ok");
+                  listProvider
+                      .getAllTasksFromFireStore(userProvider.currentUser!.id);
                 });
               },
               backgroundColor: Color(0xFFFE4A49),

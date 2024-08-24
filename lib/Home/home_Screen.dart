@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/Home/Settings_tab.dart';
 import 'package:todo_app/Home/add_task_bottom_sheet.dart';
 import 'package:todo_app/Home/task_list_tab.dart';
+import 'package:todo_app/Provider/user_provider.dart';
 import 'package:todo_app/app_colors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -19,11 +21,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context)
   {
+    var userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
           toolbarHeight: MediaQuery.of(context).size.height * 0.20,
-          title: Text(selectedIndex==0 ? AppLocalizations.of(context)!.app_title :AppLocalizations.of(context)!.settings,
-        style: Theme.of(context).textTheme.bodyLarge)),
+          title: Text(
+              selectedIndex == 0
+                  ? '${AppLocalizations.of(context)!.app_title} (${userProvider.currentUser!.name})'
+                  : '${AppLocalizations.of(context)!.settings}(${userProvider.currentUser!.name})',
+              style: Theme.of(context).textTheme.bodyLarge)),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         notchMargin: 8,
@@ -52,7 +58,11 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: (){
           showAddTaskBottomSheet();
         },
-        child: Icon(Icons.add, size: 20),
+        child: Icon(
+          Icons.add,
+          size: 25,
+          color: AppColors.whiteColor,
+        ),
         shape: StadiumBorder(side: BorderSide(
           width: 6,
           color: AppColors.whiteColor

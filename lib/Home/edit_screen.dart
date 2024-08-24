@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/Home/home_Screen.dart';
 import 'package:todo_app/Provider/list_provider.dart';
+import 'package:todo_app/Provider/user_provider.dart';
 import 'package:todo_app/app_colors.dart';
 import 'package:todo_app/firebase_utils.dart';
 import 'package:todo_app/model/task.dart';
@@ -131,16 +132,18 @@ class _EditScreenState extends State<EditScreen> {
   }
 
   void updateTask() {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
     if (titleController.text.isNotEmpty &&
         descriptionController.text.isNotEmpty) {
       Task updateTask = Task(
           title: titleController.text,
           description: descriptionController.text,
           datetime: selectNewDate);
-      FirebaseUtils.updateTaskInFirestore(updateTask)
+      FirebaseUtils.updateTaskInFirestore(
+              updateTask, userProvider.currentUser!.id)
           .timeout(Duration(seconds: 1), onTimeout: () {
         print("Task updated successfully");
-        listProvider.getAllTasksFromFireStore();
+        listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
         Navigator.pushNamed(context, HomeScreen.routeName);
       });
     }

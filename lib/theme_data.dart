@@ -40,13 +40,20 @@ class MyTheme
         bodyLarge: GoogleFonts.poppins(
         fontSize: 22,
         fontWeight: FontWeight.bold,
-        color: AppColors.whiteColor),
+            color: AppColors.blackColor),
         bodyMedium: GoogleFonts.poppins(
-            fontSize: 30,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
             color: AppColors.blackColor),
-      )
+          bodySmall: GoogleFonts.poppins(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: AppColors.whiteColor)
+      ),
+
+
   );
+
 
   //Dark Theme
   static final ThemeData darkTheme = ThemeData(
@@ -85,10 +92,13 @@ class MyTheme
               fontWeight: FontWeight.bold,
             color: AppColors.whiteColor),
         bodyMedium: GoogleFonts.poppins(
-        fontSize: 30,
-  fontWeight: FontWeight.bold,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             color: AppColors.whiteColor),
-      )
+          bodySmall: GoogleFonts.poppins(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: AppColors.whiteColor))
 
   );
 }

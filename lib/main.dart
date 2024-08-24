@@ -10,6 +10,7 @@ import 'package:todo_app/Home/auth/register_screen.dart';
 import 'package:todo_app/Home/edit_screen.dart';
 import 'package:todo_app/Home/home_Screen.dart';
 import 'package:todo_app/Provider/list_provider.dart';
+import 'package:todo_app/Provider/user_provider.dart';
 import 'package:todo_app/theme_data.dart';
 
 import 'Provider/app_config_provider.dart';
@@ -24,7 +25,8 @@ void main() async {
               messagingSenderId: "640488358334",
               projectId: "todo-app-ba3ff"))
       : await Firebase.initializeApp();
-  await FirebaseFirestore.instance.disableNetwork();
+  //await FirebaseFirestore.instance.disableNetwork();
+  await FirebaseFirestore.instance.enableNetwork();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (context) => AppConfigProvider(),
@@ -32,6 +34,7 @@ void main() async {
     ChangeNotifierProvider(
       create: (context) => ListProvider(),
     ),
+    ChangeNotifierProvider(create: (context) => UserProvider())
   ], child: MyApp()));
 }
 
