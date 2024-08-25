@@ -15,9 +15,13 @@ class ListProvider extends ChangeNotifier {
     }).toList();
 
     tasksList.where((task) {
-      return (task.datetime.day == selectDate.day &&
-          task.datetime.month == selectDate.month &&
-          task.datetime.year == selectDate.year);
+      if (selectDate.day == task.datetime.day &&
+          selectDate.month == task.datetime.month &&
+          selectDate.year == task.datetime.year) {
+        return true;
+      } else {
+        return false;
+      }
     }).toList();
 
     //sorting

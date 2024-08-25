@@ -100,6 +100,8 @@ var selectDate = DateTime.now();
                     ElevatedButton(
                         onPressed: () {
                           addTask();
+                          Navigator.pop(context);
+
                           BottomNavigationBarThemeData(
                               backgroundColor: AppColors.primaryColor);
                         },
@@ -127,21 +129,25 @@ var selectDate = DateTime.now();
 
       FirebaseUtils.addTaskToFireStore(tasks, userProvider.currentUser!.id)
           .then((value) {
+        if (mounted) {
+          DialogeUtils.showMessage(
+              context: context,
+              content: "Task Added Successfully",
+              posActionName: "Ok",
+              posAction: () {});
+          listProvider.getAllTasksFromFireStore(
+              userProvider.currentUser!.id);
+          Navigator.pop(context);
+        }
+      }).timeout(Duration(seconds: 2), onTimeout: () {
         DialogeUtils.showMessage(
             context: context,
             content: "Task Added Successfully",
-            posActionName: "Ok");
+            posActionName: "Ok",
+            posAction: () {
+              Navigator.pop(context);
+            });
         listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
-
-        Navigator.pop(context);
-      }).timeout(Duration(seconds: 1), onTimeout: () {
-        DialogeUtils.showMessage(
-            context: context,
-            content: "Task Added Successfully",
-            posActionName: "Ok");
-        listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
-
-        Navigator.pop(context);
             });
       }
   }

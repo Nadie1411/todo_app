@@ -5,6 +5,7 @@ import 'package:todo_app/Home/home_Screen.dart';
 import 'package:todo_app/Provider/list_provider.dart';
 import 'package:todo_app/Provider/user_provider.dart';
 import 'package:todo_app/app_colors.dart';
+import 'package:todo_app/dialouge_utiils.dart';
 import 'package:todo_app/firebase_utils.dart';
 import 'package:todo_app/model/task.dart';
 
@@ -124,12 +125,6 @@ class _EditScreenState extends State<EditScreen> {
     ));
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    titleController.dispose();
-    descriptionController.dispose();
-  }
 
   void updateTask() {
     var userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -141,7 +136,13 @@ class _EditScreenState extends State<EditScreen> {
           datetime: selectNewDate);
       FirebaseUtils.updateTaskInFirestore(
               updateTask, userProvider.currentUser!.id)
-          .timeout(Duration(seconds: 1), onTimeout: () {
+          .then((value) {
+        DialogeUtils.showMessage(
+            context: context,
+            content: "Task Updated Successfully",
+            posActionName: "Ok");
+        listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
+      }).timeout(Duration(seconds: 1), onTimeout: () {
         print("Task updated successfully");
         listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
         Navigator.pushNamed(context, HomeScreen.routeName);

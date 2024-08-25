@@ -91,7 +91,7 @@ class TaskListItem extends StatelessWidget
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    task.title,
+                    task.isDone ? "Done" : task.title,
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium
@@ -110,11 +110,17 @@ class TaskListItem extends StatelessWidget
                 padding:EdgeInsets.symmetric(horizontal: 12) ,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: AppColors.primaryColor,
+                  color: task.isDone
+                      ? AppColors.greenColor // Change color if task is done
+                      : AppColors.primaryColor,
                 ),
                 child: IconButton(onPressed: (){
-
-                },icon: Icon(Icons.check,size: 35,color:AppColors.whiteColor ,),)
+                    task.toggleDone(); // Toggle task status
+                    FirebaseUtils.updateTaskInFirestore(
+                        task, userProvider.currentUser!.id); // Update Firestore
+                    listProvider
+                        .getAllTasksFromFireStore(userProvider.currentUser!.id);
+                  },icon: Icon(Icons.check,size: 35,color:AppColors.whiteColor ,),)
                 ,
               )
             ],

@@ -34,4 +34,8 @@ class Task {
       'isDone': isDone
     };
   }
+
+  void toggleDone() {
+    isDone = !isDone;
+  }
 }

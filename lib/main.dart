@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget
       supportedLocales: AppLocalizations.supportedLocales,
       locale: Locale(provider.appLanguage),
       debugShowCheckedModeBanner: false,
-      initialRoute: HomeScreen.routeName,
+      initialRoute: LoginScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
         RegisterScreen.routeName: (context) => RegisterScreen(),

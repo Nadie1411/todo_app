@@ -48,8 +48,7 @@ class MyTheme
           bodySmall: GoogleFonts.poppins(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: AppColors.whiteColor)
-      ),
+            color: AppColors.blackColor)),
 
 
   );

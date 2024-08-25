@@ -8,7 +8,6 @@ import 'package:todo_app/Provider/user_provider.dart';
 import 'package:todo_app/app_colors.dart';
 import 'package:todo_app/dialouge_utiils.dart';
 import 'package:todo_app/firebase_utils.dart';
-import 'package:todo_app/model/my_user.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = "login_Screen";
@@ -131,10 +130,14 @@ class _LoginScreenState extends State<LoginScreen> {
         var user = await FirebaseUtils.readUserFromFirestore(
             credential.user?.uid ?? '');
         if (user == null) {
-          DialogeUtils.hideLoading(context);
-          return DialogeUtils.showMessage(
-              context: context, content: 'failed', negActionName: "Cancel");
+          print('inside if');
+          return;
+
+          // DialogeUtils.hideLoading(context);
+          // return DialogeUtils.showMessage(
+          //     context: context, content: 'failed', negActionName: "Cancel");
         }
+        print('after if');
         var userProvider = Provider.of<UserProvider>(context, listen: false);
         userProvider.updateUser(user);
         //todo:hide loading
