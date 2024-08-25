@@ -20,8 +20,9 @@ class DialogeUtils {
                 ),
                 Text(
                   loadingLabel,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                )
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: AppColors.blackColor,
+                        ))
               ],
             ),
           );
@@ -71,9 +72,16 @@ class DialogeUtils {
         context: context,
         builder: (context) {
           return AlertDialog(
-            content:
-                Text(content, style: Theme.of(context).textTheme.bodyMedium),
-            title: Text(title, style: Theme.of(context).textTheme.bodyMedium),
+            content: Text(content,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: AppColors.blackColor)),
+            title: Text(title,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: AppColors.blackColor)),
             actions: actions,
           );
         });

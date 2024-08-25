@@ -22,7 +22,7 @@ class Task {
             id: data['id'] as String,
             title: data['title'],
             description: data['description'],
-            datetime: DateTime.fromMillisecondsSinceEpoch(data['dateTime']),
+            datetime: DateTime.fromMicrosecondsSinceEpoch(data['dateTime']),
             isDone: data['isDone']);
 
   Map<String, dynamic> toJson() {

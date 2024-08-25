@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
             content: "Login Successfull",
             posActionName: "Ok",
             posAction: () {
-              Navigator.of(context).pushNamed(HomeScreen.routeName);
+              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
             });
       } on FirebaseAuthException catch (e) {
         if (e.code == 'invalid-credential') {

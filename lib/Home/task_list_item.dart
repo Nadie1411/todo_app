@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/Home/edit_screen.dart';
 import 'package:todo_app/Provider/list_provider.dart';
 import 'package:todo_app/Provider/user_provider.dart';
 import 'package:todo_app/dialouge_utiils.dart';
@@ -50,7 +51,7 @@ class TaskListItem extends StatelessWidget
                     listProvider
                         .getAllTasksFromFireStore(userProvider.currentUser!.id);
                   },
-                ).timeout(Duration(seconds: 1), onTimeout: () {
+                ).timeout(Duration(seconds: 5), onTimeout: () {
                   DialogeUtils.showMessage(
                       context: context,
                       content: "Task Deleted Successfully",
@@ -64,7 +65,18 @@ class TaskListItem extends StatelessWidget
               icon: Icons.delete,
               label: 'Delete',
             ),
-
+            SlidableAction(
+              borderRadius: BorderRadius.circular(15),
+              onPressed: (context) {
+                Navigator.of(context).pushNamed(EditScreen.routeName);
+                arguments:
+                Task;
+              },
+              backgroundColor: Color(0xFFFEEF49),
+              foregroundColor: Colors.white,
+              icon: Icons.edit,
+              label: 'Edit',
+            ),
           ],
         ),
 
@@ -85,7 +97,8 @@ class TaskListItem extends StatelessWidget
                 margin: EdgeInsets.all(10),
                 height: MediaQuery.of(context).size.height*0.1,
                 width: 4,
-                color: AppColors.primaryColor,
+                color:
+                    task.isDone ? AppColors.greenColor : AppColors.primaryColor,
               ),
               Expanded(child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -94,15 +107,19 @@ class TaskListItem extends StatelessWidget
                     task.isDone ? "Done" : task.title,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: AppColors.primaryColor),
+                        .bodyMedium?.copyWith(
+                        color: task.isDone
+                            ? AppColors.greenColor
+                            : AppColors.primaryColor),
                   ),
                   Text(
                     task.description,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: AppColors.primaryColor),
+                        .bodyMedium?.copyWith(
+                        color: task.isDone
+                            ? AppColors.greenColor
+                            : AppColors.primaryColor),
                   ),
                 ],
               )),

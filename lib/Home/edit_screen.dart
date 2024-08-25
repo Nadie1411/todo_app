@@ -5,7 +5,6 @@ import 'package:todo_app/Home/home_Screen.dart';
 import 'package:todo_app/Provider/list_provider.dart';
 import 'package:todo_app/Provider/user_provider.dart';
 import 'package:todo_app/app_colors.dart';
-import 'package:todo_app/dialouge_utiils.dart';
 import 'package:todo_app/firebase_utils.dart';
 import 'package:todo_app/model/task.dart';
 
@@ -19,15 +18,17 @@ class EditScreen extends StatefulWidget {
 class _EditScreenState extends State<EditScreen> {
   late TextEditingController titleController;
   late TextEditingController descriptionController;
-  late DateTime selectNewDate;
+  DateTime selectedDate = DateTime.now();
   late ListProvider listProvider;
+  late UserProvider userProvider;
   late Task task;
 
   @override
   Widget build(BuildContext context) {
-    editScreenArgs args =
-        ModalRoute.of(context)!.settings.arguments as editScreenArgs;
+    var args = ModalRoute.of(context)!.settings.arguments as Task;
+
     listProvider = Provider.of<ListProvider>(context);
+    userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
         body: Stack(
@@ -64,8 +65,9 @@ class _EditScreenState extends State<EditScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    controller: titleController =
-                        TextEditingController(text: args.task.title),
+                    onChanged: (value) {
+                      args.title = value;
+                    },
                     decoration: InputDecoration(
                         label: Text(
                       "Task title",
@@ -76,8 +78,9 @@ class _EditScreenState extends State<EditScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
-                    controller: descriptionController =
-                        TextEditingController(text: args.task.description),
+                    onChanged: (value) {
+                      args.description = value;
+                    },
                     decoration: InputDecoration(
                         label: Text("Task details",
                             style: Theme.of(context).textTheme.titleLarge)),
@@ -93,8 +96,18 @@ class _EditScreenState extends State<EditScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: InkWell(
-                    onTap: () {
-                      showCalendar();
+                    onTap: () async {
+                      DateTime? chosenDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.fromMicrosecondsSinceEpoch(
+                              args.datetime.microsecondsSinceEpoch),
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime.now().add(Duration(days: 365)));
+                      if (chosenDate != null) {
+                        setState(() {});
+                      }
+
+                      selectedDate = chosenDate ?? selectedDate;
                     },
                     child: Text(
                         "${listProvider.selectDate.day}/"
@@ -107,7 +120,10 @@ class _EditScreenState extends State<EditScreen> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      updateTask();
+                      FirebaseUtils.updateTaskInFirestore(
+                          args, userProvider.currentUser!.id);
+                      Navigator.of(context)
+                          .pushReplacementNamed(HomeScreen.routeName);
                     },
                     child: Text(
                       "Save Changes",
@@ -126,46 +142,7 @@ class _EditScreenState extends State<EditScreen> {
   }
 
 
-  void updateTask() {
-    var userProvider = Provider.of<UserProvider>(context, listen: false);
-    if (titleController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty) {
-      Task updateTask = Task(
-          title: titleController.text,
-          description: descriptionController.text,
-          datetime: selectNewDate);
-      FirebaseUtils.updateTaskInFirestore(
-              updateTask, userProvider.currentUser!.id)
-          .then((value) {
-        DialogeUtils.showMessage(
-            context: context,
-            content: "Task Updated Successfully",
-            posActionName: "Ok");
-        listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
-      }).timeout(Duration(seconds: 1), onTimeout: () {
-        print("Task updated successfully");
-        listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
-        Navigator.pushNamed(context, HomeScreen.routeName);
-      });
-    }
   }
 
-  void showCalendar() async {
-    var chosenDate = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(Duration(days: 365)));
-    if (chosenDate != null) {
-      setState(() {});
-    }
 
-    selectNewDate = chosenDate ?? selectNewDate;
-  }
-}
 
-class editScreenArgs {
-  Task task;
-
-  editScreenArgs({required this.task});
-}

@@ -25,8 +25,7 @@ class FirebaseUtils {
   }
 
   static Future<void> updateTaskInFirestore(Task task, String uId) async {
-    final newDoc = getTasksCollection(uId).doc(task.id);
-    await newDoc.update(task.toJson());
+    return getTasksCollection(uId).doc(task.id).update(task.toJson());
   }
 
   static CollectionReference<MyUser> getUsersCollection() {

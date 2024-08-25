@@ -26,9 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
           actions: [
-            ElevatedButton(
+            TextButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(LoginScreen.routeName);
+                  Navigator.of(context)
+                      .pushReplacementNamed(LoginScreen.routeName);
                 },
                 child: Icon(
                   Icons.logout,

@@ -159,7 +159,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             title: "Success",
             posActionName: "Ok",
             posAction: () {
-              Navigator.of(context).pushNamed(HomeScreen.routeName);
+              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
             });
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {

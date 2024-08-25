@@ -14,14 +14,11 @@ class ListProvider extends ChangeNotifier {
       return doc.data();
     }).toList();
 
-    tasksList.where((task) {
-      if (selectDate.day == task.datetime.day &&
+    tasksList = tasksList.where((task) {
+      return selectDate.day == task.datetime.day &&
           selectDate.month == task.datetime.month &&
-          selectDate.year == task.datetime.year) {
-        return true;
-      } else {
-        return false;
-      }
+          selectDate.year == task.datetime.year;
+      return true;
     }).toList();
 
     //sorting
